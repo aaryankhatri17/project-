@@ -1,9 +1,4 @@
 {
   "$schema": "https://schema.railpack.com",
   "buildAptPackages": ["python3", "make", "g++"]
-  "packages": [
-    "python3",
-    "make",
-    "g++"
-  ]
 }
