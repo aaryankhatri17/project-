@@ -1,0 +1,138 @@
+<%- include("../partials/header", { authOnly: false }) %>
+
+<section class="panel">
+  <div class="section-head">
+    <div>
+      <div class="small">Project</div>
+      <h1 class="section-title"><%= project.name %></h1>
+      <div class="muted"><%= project.description || "No description provided." %></div>
+    </div>
+    <div class="project-metadata">
+      <div class="pill"><%= project.role %></div>
+      <div class="pill neutral"><%= members.length %> members</div>
+      <div class="pill ok"><%= tasks.filter((task) => task.status === "done").length %> done</div>
+    </div>
+  </div>
+</section>
+
+<section class="grid grid-3">
+  <% if (project.role === "admin") { %>
+    <div class="panel">
+      <div class="small">Team</div>
+      <h2>Add member</h2>
+      <form action="/projects/<%= project.id %>/members" method="post">
+        <input type="email" name="email" placeholder="Existing user email" required />
+        <select name="role">
+          <option value="member">Member</option>
+          <option value="admin">Admin</option>
+        </select>
+        <button type="submit">Add to project</button>
+      </form>
+    </div>
+  <% } %>
+
+  <div class="panel" style="<%= project.role === 'admin' ? 'grid-column: span 2;' : 'grid-column: span 3;' %>">
+    <div class="small">Members</div>
+    <div class="stack">
+      <% members.forEach((member) => { %>
+        <div class="project-card">
+          <div class="card-footer">
+            <div>
+              <strong><%= member.name %></strong>
+              <div class="small"><%= member.email %></div>
+            </div>
+            <div class="pill"><%= member.role %></div>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  </div>
+</section>
+
+<section class="grid grid-3">
+  <div class="panel">
+    <div class="small">Task creation</div>
+    <h2>Create task</h2>
+    <form action="/projects/<%= project.id %>/tasks" method="post">
+      <input type="text" name="title" placeholder="Task title" required />
+      <textarea name="description" placeholder="Add context for the assignee"></textarea>
+      <select name="assignee_id">
+        <option value="">Unassigned</option>
+        <% members.forEach((member) => { %>
+          <option value="<%= member.id %>"><%= member.name %> (<%= member.role %>)</option>
+        <% }) %>
+      </select>
+      <div class="split">
+        <select name="status">
+          <option value="todo">To do</option>
+          <option value="in_progress">In progress</option>
+          <option value="done">Done</option>
+        </select>
+        <input type="date" name="due_date" />
+      </div>
+      <button type="submit">Create task</button>
+    </form>
+  </div>
+
+  <div class="panel" style="grid-column: span 2;">
+    <div class="section-head">
+      <div>
+        <div class="small">Tasks</div>
+        <h2>Execution board</h2>
+      </div>
+    </div>
+
+    <div class="stack">
+      <% if (tasks.length === 0) { %>
+        <div class="muted">No tasks in this project yet.</div>
+      <% } %>
+
+      <% tasks.forEach((task) => { %>
+        <div class="task-card">
+          <div class="card-footer">
+            <div>
+              <div class="pill <%= task.isOverdue ? 'warn' : task.status === 'done' ? 'ok' : 'neutral' %>">
+                <%= task.status.replace("_", " ") %>
+              </div>
+              <h3><%= task.title %></h3>
+              <div class="muted"><%= task.description || "No description provided." %></div>
+            </div>
+            <div class="small">Created by <%= task.creator_name %></div>
+          </div>
+          <div class="project-metadata">
+            <div class="pill neutral">Assignee: <%= task.assignee_name || "Unassigned" %></div>
+            <div class="pill <%= task.isOverdue ? 'warn' : 'neutral' %>">Due: <%= task.due_date || "None" %></div>
+          </div>
+          <div class="card-footer">
+            <form action="/tasks/<%= task.id %>/status" method="post">
+              <div class="inline-actions">
+                <select name="status">
+                  <option value="todo" <%= task.status === "todo" ? "selected" : "" %>>To do</option>
+                  <option value="in_progress" <%= task.status === "in_progress" ? "selected" : "" %>>In progress</option>
+                  <option value="done" <%= task.status === "done" ? "selected" : "" %>>Done</option>
+                </select>
+                <button type="submit" class="secondary">Update status</button>
+              </div>
+            </form>
+
+            <% if (project.role === "admin") { %>
+              <form action="/tasks/<%= task.id %>/assign" method="post">
+                <div class="inline-actions">
+                  <select name="assignee_id">
+                    <option value="">Unassigned</option>
+                    <% members.forEach((member) => { %>
+                      <option value="<%= member.id %>" <%= member.id === task.assignee_id ? "selected" : "" %>><%= member.name %></option>
+                    <% }) %>
+                  </select>
+                  <button type="submit">Assign</button>
+                </div>
+              </form>
+            <% } %>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  </div>
+</section>
+
+<%- include("../partials/footer") %>

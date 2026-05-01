@@ -1,0 +1,48 @@
+<%- include("../partials/header", { authOnly: false }) %>
+
+<section class="grid grid-3">
+  <div class="panel">
+    <div class="small">Create</div>
+    <h1 class="section-title">New project</h1>
+    <form action="/projects" method="post">
+      <input type="text" name="name" placeholder="Project name" required />
+      <textarea name="description" placeholder="What is this project about?"></textarea>
+      <button type="submit">Create project</button>
+    </form>
+  </div>
+
+  <div class="panel" style="grid-column: span 2;">
+    <div class="section-head">
+      <div>
+        <div class="small">Projects</div>
+        <h2>Your workspaces</h2>
+      </div>
+    </div>
+    <div class="stack">
+      <% if (projects.length === 0) { %>
+        <div class="muted">No projects yet. Create your first workspace here.</div>
+      <% } %>
+      <% projects.forEach((project) => { %>
+        <div class="project-card">
+          <div class="card-footer">
+            <div>
+              <h3><%= project.name %></h3>
+              <div class="muted"><%= project.description || "No description provided." %></div>
+            </div>
+            <div class="pill"><%= project.role %></div>
+          </div>
+          <div class="project-metadata">
+            <div class="pill neutral"><%= project.total_tasks || 0 %> tasks</div>
+            <div class="pill ok"><%= project.done_tasks || 0 %> completed</div>
+          </div>
+          <div class="card-footer">
+            <div class="small">Created <%= project.created_at.slice(0, 10) %></div>
+            <a href="/projects/<%= project.id %>" class="button">Open</a>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  </div>
+</section>
+
+<%- include("../partials/footer") %>

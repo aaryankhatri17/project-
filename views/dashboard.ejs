@@ -1,0 +1,95 @@
+<%- include("partials/header", { authOnly: false }) %>
+
+<section class="panel">
+  <div class="section-head">
+    <div>
+      <div class="small">Overview</div>
+      <h1 class="section-title">Dashboard</h1>
+    </div>
+    <a href="/projects" class="button">Manage projects</a>
+  </div>
+
+  <div class="grid grid-4">
+    <div class="stat">
+      <div class="small">Total tasks</div>
+      <div class="stat-value"><%= stats.total_tasks || 0 %></div>
+    </div>
+    <div class="stat">
+      <div class="small">To do</div>
+      <div class="stat-value"><%= stats.todo_tasks || 0 %></div>
+    </div>
+    <div class="stat">
+      <div class="small">In progress</div>
+      <div class="stat-value"><%= stats.in_progress_tasks || 0 %></div>
+    </div>
+    <div class="stat">
+      <div class="small">Overdue</div>
+      <div class="stat-value"><%= stats.overdue_tasks || 0 %></div>
+    </div>
+  </div>
+</section>
+
+<section class="grid grid-3">
+  <div class="panel">
+    <div class="section-head">
+      <div>
+        <div class="small">Tasks</div>
+        <h2>Priority queue</h2>
+      </div>
+    </div>
+    <div class="stack">
+      <% if (tasks.length === 0) { %>
+        <div class="muted">No tasks yet. Create a project to get started.</div>
+      <% } %>
+      <% tasks.forEach((task) => { %>
+        <div class="task-card">
+          <div class="pill <%= task.isOverdue ? 'warn' : task.status === 'done' ? 'ok' : 'neutral' %>">
+            <%= task.status.replace("_", " ") %>
+          </div>
+          <h3><%= task.title %></h3>
+          <div class="small"><%= task.project_name %></div>
+          <div class="card-footer">
+            <div class="small"><%= task.due_date || "No due date" %></div>
+            <a href="/projects/<%= task.project_id %>" class="button secondary">Open</a>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  </div>
+
+  <div class="panel" style="grid-column: span 2;">
+    <div class="section-head">
+      <div>
+        <div class="small">Projects</div>
+        <h2>Active workspaces</h2>
+      </div>
+    </div>
+
+    <div class="grid">
+      <% if (projects.length === 0) { %>
+        <div class="muted">No projects yet.</div>
+      <% } %>
+      <% projects.forEach((project) => { %>
+        <div class="project-card">
+          <div class="card-footer">
+            <div>
+              <h3 class="project-title" style="font-size: 1.5rem;"><%= project.name %></h3>
+              <div class="muted"><%= project.description || "No description provided." %></div>
+            </div>
+            <div class="pill"><%= project.role %></div>
+          </div>
+          <div class="project-metadata">
+            <div class="pill neutral"><%= project.total_tasks || 0 %> tasks</div>
+            <div class="pill ok"><%= project.done_tasks || 0 %> done</div>
+          </div>
+          <div class="card-footer">
+            <div class="small">Created <%= project.created_at.slice(0, 10) %></div>
+            <a href="/projects/<%= project.id %>" class="button">Open project</a>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  </div>
+</section>
+
+<%- include("partials/footer") %>

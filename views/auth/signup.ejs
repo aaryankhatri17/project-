@@ -1,0 +1,19 @@
+<%- include("../partials/header", { authOnly: true }) %>
+
+<section class="panel">
+  <div class="section-head">
+    <div>
+      <div class="small">Authentication</div>
+      <h1 class="section-title">Create account</h1>
+    </div>
+  </div>
+
+  <form action="/signup" method="post">
+    <input type="text" name="name" placeholder="Full name" required />
+    <input type="email" name="email" placeholder="Email address" required />
+    <input type="password" name="password" placeholder="Password (min 6 chars)" required />
+    <button type="submit">Sign up</button>
+  </form>
+</section>
+
+<%- include("../partials/footer") %>

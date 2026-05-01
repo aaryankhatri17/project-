@@ -1,0 +1,27 @@
+<%- include("partials/header", { authOnly: false }) %>
+
+<section class="hero">
+  <div>
+    <div class="pill">Admin/member permissions built in</div>
+    <h1>Manage projects, assign tasks, and keep delivery visible.</h1>
+    <p>
+      Project Pulse is a lightweight team workspace with signup/login, project membership,
+      task ownership, overdue tracking, and a clean dashboard for daily execution.
+    </p>
+    <div class="inline-actions">
+      <a href="/signup" class="button">Start building</a>
+      <a href="/login" class="button secondary">Log in</a>
+    </div>
+  </div>
+  <div class="hero-card stack">
+    <div>
+      <div class="small">Dashboard</div>
+      <div class="stat-value">4 views</div>
+      <div class="muted">Projects, team members, task status, and overdue items in one app.</div>
+    </div>
+    <div class="pill ok">REST APIs included</div>
+    <div class="pill warn">Railway-ready deployment</div>
+  </div>
+</section>
+
+<%- include("partials/footer") %>
